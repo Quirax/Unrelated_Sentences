@@ -1,13 +1,16 @@
 import json
 import spacy
 from tqdm import tqdm
+import numpy as np
 
 # PARAMETERS
-DEBUG_MODE     = True
-TRAIN_FILENAME = 'dataset/train.json'
-TEST_FILENAME  = 'dataset/test.json'
-ENCODING       = 'utf-8'
-STOP_WORDS     = { "'", "-", "–", "—", "―", " ", "!", "$", "%", "(", ")", ",", ".", "/", ":", ";", "?", "─", "°", "\"" }
+DEBUG_MODE       = True
+TRAIN_FILENAME   = 'dataset/train.json'
+TEST_FILENAME    = 'dataset/test.json'
+ENCODING         = 'utf-8'
+STOP_WORDS       = { "'", "-", "–", "—", "―", " ", "!", "$", "%", "(", ")", ",", ".", "/", ":", ";", "?", "─", "°", "\"" }
+VECTOR_SIZE      = 300
+NUM_OF_SENTENCES = 6
 
 # Sequence or Tqdm
 def seq(s):
@@ -19,7 +22,7 @@ def seq(s):
 # Dataset validator
 def validate_dataset(dataset):
     for item in dataset:
-        if len(item['sentences']) != 6:
+        if len(item['sentences']) != NUM_OF_SENTENCES:
             raise 'ERROR: The number of sentences is invalid'
 
 # Load datasets
@@ -40,6 +43,10 @@ if __name__ == '__main__':
     
         for i, item in enumerate(seq(dataset)):
             dataset[i]['tokens'] = []
+            dataset[i]['vectors'] = []
             for sentence in item['sentences']:
-                tokens = [tk for tk in nlp(sentence) if tk.text not in nlp.Defaults.stop_words]
+                tokens = [tk for tk in nlp(sentence) if tk.text not in nlp.Defaults.stop_words and tk.has_vector]
                 dataset[i]['tokens'].append(tokens)
+
+                vector = sum([tk.vector for tk in tokens]) / len(tokens) if len(tokens) > 0 else np.zeros(VECTOR_SIZE)
+                dataset[i]['vectors'].append(vector)
