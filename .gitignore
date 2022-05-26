@@ -129,5 +129,5 @@ dmypy.json
 .pyre/
 
 .docs
-dataset
+*.pickle
 *.bat
