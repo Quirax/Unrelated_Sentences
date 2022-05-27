@@ -2,30 +2,28 @@ import json
 import spacy
 from tqdm import tqdm
 import numpy as np
-from sklearn.metrics.pairwise import cosine_similarity, euclidean_distances
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
 # MODES
 DEBUG_MODE       = True
-TOKENS_MODE      = False
 USE_PICKLE       = True
 
 # PARAMETERS
 TRAIN_FILENAME   = 'dataset/train.json'
 TEST_FILENAME    = 'dataset/test.json'
 ENCODING         = 'utf-8'
+VECTOR_SIZE      = 300
+NUM_OF_SENTENCES = 6
+NUM_OF_CHOICES   = 5
+
 STOP_WORDS       = {
     "'", "-", "–", "—", "―", " ", "!", "$", "%", "(", ")", ",", ".", "/", ":", ";", "?", "─", "°", "\"",
 }
-VECTOR_SIZE      = 300
-NUM_OF_SENTENCES = 6
-SIMILARITY       = cosine_similarity
-CHOOSER          = np.argmax
 
 OPTIMIZER_PARAMS = {'lr': 1} # lr = 1
-MAX_EPOCH        = 100000
+MAX_EPOCH        = 20000
 LOG_EPOCH        = 100
 RANDOM_SEED      = 85624965 # 85624965 (Alt. 91263498)
 RNN_MODEL        = nn.RNN
@@ -33,7 +31,6 @@ RNN_SIZE         = 20 # 20
 RNN_LAYERS       = 1
 RNN_PARAMS       = {}
 FC1_SIZE         = 4 # 4
-FC2_SIZE         = FC1_SIZE
 DROPOUT_RATE     = 0.2
 
 # Model
@@ -42,38 +39,26 @@ class Model(nn.Module):
         super(Model, self).__init__()
 
         self.rnn = RNN_MODEL(VECTOR_SIZE, RNN_SIZE, RNN_LAYERS, batch_first=True, **RNN_PARAMS)
-        # self.drop = nn.Dropout(DROPOUT_RATE)
         self.fc1 = nn.Linear(RNN_SIZE, FC1_SIZE)
-        # self.fc2 = nn.Linear(FC1_SIZE, FC2_SIZE)
-        self.fc3  = nn.Linear(FC2_SIZE, 5)
+        self.fc2  = nn.Linear(FC1_SIZE, NUM_OF_CHOICES)
         self.softmax = nn.Softmax(dim=1)
 
-        # self.fc1.weight.data.uniform_(-0.5, 0.5)
-        # self.fc1.bias.data.zero_()
-        # self.fc2.weight.data.uniform_(-0.5, 0.5)
-        # self.fc2.bias.data.zero_()
-        self.fc3.weight.data.uniform_(-2.0, 2.0)
-        # self.fc3.bias.data.zero_()
+        self.fc2.weight.data.uniform_(-2.0, 2.0)
     
     def forward(self, vectors):
         hidden = None
         for v in vectors[0]:
             outputs, hidden = self.rnn(v.unsqueeze(0).unsqueeze(0), hidden)
-        # outputs = self.drop(outputs)
         fc1 = outputs.squeeze(0)
         fc1 = self.fc1(fc1)
         fc1 = F.relu(fc1)
-        # fc2 = self.fc2(fc1)
-        fc2 = fc1
-        # fc2 = F.relu(fc2)
-        fc3 = self.fc3(fc2)
-        # fc3 = F.relu(fc3)
-        softmax = self.softmax(fc3)
+        fc2 = self.fc3(fc1)
+        softmax = self.softmax(fc2)
         return softmax
 
 # Sequence or Tqdm
 def seq(s, desc):
-    if DEBUG_MODE and not TOKENS_MODE:
+    if DEBUG_MODE:
         return tqdm(s, desc=desc)
     else:
         return s
@@ -89,10 +74,10 @@ def do_train(model, dataset, loss_fn, optimizer):
     model.train()
     train_loss, n_correct, n_data = 0, 0, 0
 
-    for batch_idx, item in enumerate(dataset):
+    for item in dataset:
         data = torch.asarray(np.array([item['vectors']]))
         
-        target = torch.zeros((1, 5), dtype=torch.float)
+        target = torch.zeros((1, NUM_OF_CHOICES), dtype=torch.float)
         target[0][item['answer'] - 1] = 1.0
 
         optimizer.zero_grad()
@@ -114,10 +99,10 @@ def evaluate(model, dataset, loss_fn):
     test_loss, n_correct, n_data = 0, 0, 0
 
     with torch.no_grad():
-        for batch_idx, item in enumerate(dataset):
+        for item in dataset:
             data = torch.asarray(np.array([item['vectors']]))
 
-            target = torch.zeros((1, 5), dtype=torch.float)
+            target = torch.zeros((1, NUM_OF_CHOICES), dtype=torch.float)
             target[0][item['answer'] - 1] = 1.0
 
             output = model(data)
