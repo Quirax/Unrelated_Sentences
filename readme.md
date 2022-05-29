@@ -7,7 +7,7 @@
 아래 환경에서 [실행 방법](#실행-방법) 문단의 설명에 따라 실행한 화면입니다.
 
 -   Jupyter Notebook의 Docker 이미지 환경에서 실행하였습니다.
--   Python 3.에서 실행하였습니다.
+-   Python 3.9.10에서 실행하였습니다.
 -   기타 Dependency는 [사용한 오픈 소스 프로젝트](#사용한-오픈-소스-프로젝트) 목록과 [requirements.txt 파일](requirements.txt)을 참조하십시오.
 
 [![실행 화면](http://img.youtube.com/vi/LzbeixQQNaQ/0.jpg)](https://youtu.be/LzbeixQQNaQ)
