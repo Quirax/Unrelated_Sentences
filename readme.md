@@ -10,7 +10,7 @@
 -   Python 3.에서 실행하였습니다.
 -   기타 Dependency는 [사용한 오픈 소스 프로젝트](#사용한-오픈-소스-프로젝트) 목록과 [requirements.txt 파일](requirements.txt)을 참조하십시오.
 
-[!Youtube Link](https://youtu.be/ZeOQcwOufxE)
+[![실행 화면](http://img.youtube.com/vi/ZeOQcwOufxE/0.jpg)](https://youtu.be/ZeOQcwOufxE)
 
 ### 실행 방법
 
@@ -44,7 +44,7 @@
 
 '무관한 문장 고르기' 유형은 1994년 대학수학능력시험(이하, '수능'이라 합니다.)이 시작된 이래 영어 영역(구 외국어 영역)에서 매 해마다 출제된 단골 유형입니다. (단, A/B형으로 나누어 출제되던 때에는 A형에만 출제되었습니다.)
 
-[!2022학년도 수능 35번 문제](docs/images/SSAT_Example.png)
+![2022학년도 수능 35번 문제](docs/images/SSAT_Example.png)
 
 이 유형은 위의 이미지와 같이 "다음 글에서 전체 흐름과 관계 없는 문장은?" 이라는 질문과 함께 대략 6개 이상의 문장이 출제되며, 처음 한 두 문장을 제외하고는 모두 번호가 표기되어 있습니다.
 수험자는 이 5가지 문장 중 다른 문장과 맥락상 불필요한 문장을 골라내어, 나머지 문장들만으로 글이 매끄럽게 이어지도록 해야 합니다.
