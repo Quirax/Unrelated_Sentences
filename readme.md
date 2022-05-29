@@ -10,7 +10,7 @@
 -   Python 3.에서 실행하였습니다.
 -   기타 Dependency는 [사용한 오픈 소스 프로젝트](#사용한-오픈-소스-프로젝트) 목록과 [requirements.txt 파일](requirements.txt)을 참조하십시오.
 
-[![실행 화면](http://img.youtube.com/vi/ZeOQcwOufxE/0.jpg)](https://youtu.be/ZeOQcwOufxE)
+[![실행 화면](http://img.youtube.com/vi/LzbeixQQNaQ/0.jpg)](https://youtu.be/LzbeixQQNaQ)
 
 ### 실행 방법
 
